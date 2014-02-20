@@ -61,7 +61,7 @@ class Config(object):
             host=host,
             name=job.name,
             number=last_build.get_number(),
-            status=last_build.get_status()
+            status=last_build.get_status() or "running..."
         ))
 
     def print_console(self, job_key):
