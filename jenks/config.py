@@ -9,6 +9,20 @@ LIST_TEMPLATE = "{key} {host} {name}"
 
 KEYS = ('0', '1', '2', '3', '4')
 
+UNABLE_TO_FIND_JENKS_CONFIG = """
+Unable to find {0} file! Maybe you need to add one?
+
+Jenks searches for files from the current working directory up.
+
+Example .jenksrc:
+
+localhost:
+  url: 'http://localhost:8080/'
+  jobs:
+    - foo
+    - bar
+""".format(CONFIG_FILE_NAME)
+
 
 class ConfigException(Exception):
     """ Wrapper for configs """
@@ -89,4 +103,4 @@ def get_configuration():
             with open(config_path) as fh:
                 return yaml.load(fh.read())
         path = os.path.dirname(path)
-    raise ConfigException("Unable to find jenkins config file {0}".format(CONFIG_FILE_NAME))
+    raise ConfigException(UNABLE_TO_FIND_JENKS_CONFIG)
