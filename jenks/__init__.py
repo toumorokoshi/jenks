@@ -1,6 +1,6 @@
 """Jenks, a Jenkins command line tool.
 Usage:
-  jenks [<keys>] [-cl]
+  jenks [<keys>] [-c | -l]
 
 Options:
   -c, --console   print console information
