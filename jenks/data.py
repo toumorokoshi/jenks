@@ -1,5 +1,6 @@
 import os
 from jenkinsapi.jenkins import Jenkins
+from collections import namedtuple
 import yaml
 
 CONFIG_FILE_NAME = ".jenksrc"
@@ -24,11 +25,13 @@ localhost:
 """.format(CONFIG_FILE_NAME)
 
 
-class ConfigException(Exception):
+class JenksDataException(Exception):
     """ Wrapper for configs """
 
+JenksJob = namedtuple('JenksJob', 'key, host, name, api_instance')
 
-class Config(object):
+
+class JenksData(object):
 
     def __init__(self, config_dict):
         self._parse_dict(config_dict)
@@ -37,44 +40,8 @@ class Config(object):
         """ return a list of jobs """
         return (j for j in self._jobs)
 
-    def get_status(self, keys):
-        """ get the status of the jobs """
-        for job_key in sorted(keys):
-            self.print_job(job_key)
-
-    def get_console(self, keys):
-        """ get the console output """
-        for job_key in sorted(keys):
-            self.print_console(job_key)
-
-    def get_list(self, keys):
-        """ list the jobs in a easily parsable manner """
-        for job_key in sorted(keys):
-            self.print_list(job_key)
-
-    def print_job(self, job_key):
-        host, job_name = self._jobs[job_key]
-        job = self.hosts[host][job_name]
-        last_build = job.get_last_build()
-        print(STATUS_STRING.format(
-            key=job_key,
-            host=host,
-            name=job.name,
-            number=last_build.get_number(),
-            status=last_build.get_status() or "running..."
-        ))
-
-    def print_console(self, job_key):
-        host, job_name = self._jobs[job_key]
-        job = self.hosts[host][job_name]
-        self.print_job(job_key)
-        print(job.get_last_build().get_console())
-
-    def print_list(self, job_key):
-        host, job_name = self._jobs[job_key]
-        print(LIST_TEMPLATE.format(key=job_key,
-                                   host=host,
-                                   name=job_name))
+    def jobs(self, job_keys):
+        return (self._jobs[key] for key in job_keys)
 
     def _parse_dict(self, config_dict):
         """ parse the dictionary into a config object """
@@ -90,7 +57,9 @@ class Config(object):
                     self._add_job(host, job_name)
 
     def _add_job(self, host, job_name):
-        self._jobs[KEYS[self._empty_key_index]] = (host, job_name)
+        key = self._empty_key_index
+        value = JenksJob(key, host, job_name, self.hosts[host][job_name])
+        self._jobs[key] = value
         self._empty_key_index += 1
 
 
@@ -103,4 +72,4 @@ def get_configuration():
             with open(config_path) as fh:
                 return yaml.load(fh.read())
         path = os.path.dirname(path)
-    raise ConfigException(UNABLE_TO_FIND_JENKS_CONFIG)
+    raise JenksDataException(UNABLE_TO_FIND_JENKS_CONFIG)
