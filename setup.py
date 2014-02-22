@@ -6,13 +6,14 @@ except:
     from distutils.core import setup
 
 setup(name='jenks',
-      version='0.2',
+      version='0.2.1',
       description='a jenkins command-line tool',
       long_description=open('README.rst').read(),
       author='Yusuke Tsutsumi',
       author_email='yusuke@yusuketsutsumi.com',
       url='http://toumorokoshi.github.io/jenks',
       packages=find_packages(),
+      include_package_data=True,
       install_requires=[
           'requests>=2.2.0',
           'docopt>=0.6.1',
