@@ -49,7 +49,8 @@ class JenksData(object):
         self.hosts = {}
         self._jobs = {}
         self._empty_key_index = 0
-        for host, info in config_dict.items():
+        for host in sorted(config_dict.keys()):
+            info = config_dict[host]
             url = info.get('url', host)
             self.hosts[host] = Jenkins(url)
             if 'jobs' in info:
