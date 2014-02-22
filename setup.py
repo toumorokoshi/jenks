@@ -6,7 +6,7 @@ except:
     from distutils.core import setup
 
 setup(name='jenks',
-      version='0.1',
+      version='0.2',
       description='a jenkins command-line tool',
       long_description=open('README.rst').read(),
       author='Yusuke Tsutsumi',
