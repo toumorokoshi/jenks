@@ -1,24 +1,25 @@
 """Jenks, a Jenkins command line tool.
 Usage:
-  jenks [<keys>] [-c | -l]
+  jenks [<keys>] [-c | -l | -t]
 
 Options:
   -c, --console   print console information
   -l, --list      list the jobs
+  -t, --trigger   trigger jobs
 """
 import signal
 import sys
 
 from docopt import docopt
 from .data import get_configuration, JenksData
-from .command import List, Console, Status
+from .command import List, Console, Status, Trigger
 
 
 def signal_handler(signal, frame):
     sys.exit(0)
 
 DEFAULT_COMMAND = Status
-ARGUMENT_COMMANDS = [List, Console]
+ARGUMENT_COMMANDS = [List, Console, Trigger]
 
 
 def main(argv=sys.argv[1:]):

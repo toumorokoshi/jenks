@@ -57,7 +57,7 @@ class JenksData(object):
                     self._add_job(host, job_name)
 
     def _add_job(self, host, job_name):
-        key = self._empty_key_index
+        key = KEYS[self._empty_key_index]
         value = JenksJob(key, host, job_name, self.hosts[host][job_name])
         self._jobs[key] = value
         self._empty_key_index += 1
