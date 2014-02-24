@@ -26,7 +26,7 @@ Get information about multiple jobs simultaneously by adding multiple keys::
 
     $ jenks -l :10
 
-And you can pull up more information with:
+And you can pull up more information with::
 
     $ jenks docs
 
@@ -38,12 +38,12 @@ Installation
 
 There's a few ways to install Jenks.
 
-Through pip:
+Through pip::
 
     pip install jenks
     pip install http://github.com/toumorokoshi/jenks/tarball/master
 
-Through `sprinter <http://sprinter.readthedocs.org/en/latest/>`_:
+Through `sprinter <http://sprinter.readthedocs.org/en/latest/>`_::
 
     sprinter install https://raw.github.com/toumorokoshi/jenks/master/sprinter.cfg
 
@@ -70,8 +70,7 @@ Here is an example .jenksrc file with all options::
 
 the in-depth configuration for a host is:
 
-* url: the url to the host. If the url doesn't exist, the host
-       name is used as the url
+* url: the url to the host. If the url doesn't exist, the host name is used as the url
 * jobs: a list of job names to add to the list
 
 Keys
@@ -84,7 +83,7 @@ jenks. For example, using -l on the example configuration will yield::
 
     $ jenks -l
     0 http://jenkins.local baz
-    1 localhost foo 
+    1 localhost foo
     2 localhost bar
 
 The character at the beginning of each line is the key. Each key is a
@@ -95,13 +94,13 @@ characters prefixed with a colon to get information about those::
     0 http://jenkins.local baz
     2 localhost bar
 
-You can pass in keys by:
+You can pass in keys as:
 
-* keys as an argument::
+* an argument::
 
     $ jenks -c 0
 
-* keys with standard in::
+* with standard in::
 
     $ echo '0' | jenks
 
@@ -112,7 +111,11 @@ Ones of Jenks' goals is to follow the Unix philosophy of doing one
 thing and doing it well. By being a modular part and supporting stdin,
 it's possible to chain Jenks with other commands.
 
-For example, here's a command that only lists status whose host or jobs match a specific regex::
+For example, here's a command that only lists status of jobs whose host or job name match a specific regex::
 
     $ jenks -l | grep "foo" | cut -d ' ' -f 1 | jenks
     0: localhost, foo (last build #7) SUCCESS
+
+Monitor the status of your Jenkins jobs:
+
+    $ watch jenks
