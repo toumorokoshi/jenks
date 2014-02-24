@@ -3,12 +3,14 @@ from jenkinsapi.jenkins import Jenkins
 from collections import namedtuple
 import yaml
 
+from .utils import generate_valid_keys
+
 CONFIG_FILE_NAME = ".jenksrc"
 
 STATUS_STRING = "{key}: {host}, {name} (build #{number}) {status}"
 LIST_TEMPLATE = "{key} {host} {name}"
 
-KEYS = ('0', '1', '2', '3', '4')
+KEYS = generate_valid_keys()
 
 UNABLE_TO_FIND_JENKS_CONFIG = """
 Unable to find {0} file! Maybe you need to add one?
