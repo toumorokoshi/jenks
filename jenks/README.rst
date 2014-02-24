@@ -116,6 +116,6 @@ For example, here's a command that only lists status of jobs whose host or job n
     $ jenks -l | grep "foo" | cut -d ' ' -f 1 | jenks
     0: localhost, foo (last build #7) SUCCESS
 
-Monitor the status of your Jenkins jobs:
+Monitor the status of your Jenkins jobs::
 
     $ watch jenks
