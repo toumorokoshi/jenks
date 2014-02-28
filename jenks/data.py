@@ -35,15 +35,23 @@ JenksJob = namedtuple('JenksJob', 'key, host, name, api_instance')
 
 class JenksData(object):
 
-    def __init__(self, config_dict):
+    def __init__(self, config_dict, write_method=None):
         self._parse_dict(config_dict)
 
     def job_keys(self):
         """ return a list of jobs """
-        return (j for j in self._jobs)
+        return sorted((j for j in self._jobs))
 
     def jobs(self, job_keys):
         return (self._jobs[key] for key in job_keys)
+
+    def add_job(self, host, job_name):
+        """ add a job to the config with <host> and <job_name> """
+        pass
+
+    def write(self):
+        if self._write_method is not None:
+            self.write_method(self._config_dict)
 
     def _parse_dict(self, config_dict):
         """ parse the dictionary into a config object """
