@@ -16,11 +16,11 @@ at the beginning of the line.
 
 You can trigger the job foo from above with::
 
-    $ jenks -t :0
+    $ jenks trigger :0
 
-Get the latest console output from the job bar with::
+Get the latest build information from the job bar with::
 
-    $ jenks -c :1
+    $ jenks build :1
 
 Get information about multiple jobs simultaneously by adding multiple keys::
 
@@ -98,11 +98,24 @@ You can pass in keys as:
 
 * an argument::
 
-    $ jenks -c 0
+    $ jenks -c :0
 
 * with standard in::
 
     $ echo '0' | jenks
+
+Job Codes
+=========
+
+You can also reference jobs from the jenksrc by name, using the job
+code syntax. The job code syntax looks like::
+
+    <host_key>:<job_name>
+    localhost:bar
+
+For example, here's how to get information about the latest build of a job by job code::
+
+    $ jenks build -j localhost:bar
 
 Examples
 ========

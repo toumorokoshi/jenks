@@ -1,9 +1,13 @@
-"""Jenks config, to manage jenks configurations
+"""
+Jenks config, to manage jenks configurations.  All actions will
+directly affect the loaded jenks configuration, defaulting to the user
+root if no config is found.
+
 Usage:
     config (-a <job_url> | --add <job_url>)
 
 Options:
-    -a <job_url>, --add <job_url>    Add a job to the jenks
+    -a <job_url>, --add <job_url>    Add a job
 """
 import logging
 from urlparse import urlparse

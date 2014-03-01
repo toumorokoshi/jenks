@@ -45,6 +45,9 @@ class JenksData(object):
     def jobs(self, job_keys):
         return (self._jobs[key] for key in job_keys)
 
+    def get_jobs_from_arguments(self, job_keys=None, job_code=None):
+        """ return a generator for jobs """
+
     def add_job(self, host, job_name):
         """ add a job to the config with <host> and <job_name> """
         pass
