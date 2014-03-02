@@ -20,6 +20,8 @@ from jenks.utils import JenksException
 
 LOGGER = logging.getLogger(__name__)
 
+DEFAULT_BUILD_KEYS = ('console', 'scm')
+
 
 class BuildException(JenksException):
     pass
@@ -46,9 +48,23 @@ def build(data, argv):
         build_id = options['--build']
 
     for job in jobs:
-        _print_build_info(job, build_id=build_id, keys=(keys or None), wait=wait)
+        LOGGER.info(get_build_info(job, build_id=build_id,
+                                   keys=(keys or DEFAULT_BUILD_KEYS),
+                                   wait=wait))
 
 
-def _print_build_info(job, build_id=None, keys=('console', 'scm'), wait=False):
+def get_build_info(job, build_id=None, keys=DEFAULT_BUILD_KEYS, wait=False):
     """ print build info about a job """
-    pass
+    build = job.get_build(build_id) if build_id else job.get_last_build()
+    output = ""
+
+    if wait:
+        build.block_until_complete()
+
+    if 'console' in keys:
+        output += build.get_console()
+
+    if 'scm' in keys:
+        output += build.get_revision()
+
+    return output

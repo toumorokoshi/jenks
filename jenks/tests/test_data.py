@@ -25,4 +25,5 @@ class TestData(object):
             eq_(return_key, result_key)
 
     def test_jobs(self):
+        """ jobs() should return
         pass
