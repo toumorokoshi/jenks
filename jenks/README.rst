@@ -110,7 +110,7 @@ Job Codes
 You can also reference jobs from the jenksrc by name, using the job
 code syntax. The job code syntax looks like::
 
-    <host_key>:<job_name>
+    <host_key>/<job_name>
     localhost:bar
 
 For example, here's how to get information about the latest build of a job by job code::

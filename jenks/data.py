@@ -47,6 +47,20 @@ class JenksData(object):
 
     def get_jobs_from_arguments(self, job_keys=None, job_code=None):
         """ return a generator for jobs """
+        jobs = []
+        if job_keys:
+            job_keys = job_keys.strip(" :")
+            jobs.extend([job for job in self.jobs(job_keys)])
+        if job_code:
+            host, job_name = job_code.rsplit("/", 1)
+            host = self.hosts.get(host, Jenkins(host))
+            if host.has_job(job_name):
+                job = self.hosts[host][job_name]
+                jobs.extend([job])
+            else:
+                raise JenksDataException(
+                    "Could not find Job {0}/{1}!".format(host, job_name))
+        return jobs
 
     def add_job(self, host, job_name):
         """ add a job to the config with <host> and <job_name> """

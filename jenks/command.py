@@ -28,16 +28,6 @@ class Status(object):
         )
 
 
-class Console(object):
-    """ return the console output of jobs """
-
-    argument = "--console"
-
-    @staticmethod
-    def act(job):
-        return job.api_instance.get_last_build().get_console()
-
-
 class List(object):
     """ list the information about the job without retrieving information online """
 

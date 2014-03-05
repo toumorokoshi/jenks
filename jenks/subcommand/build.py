@@ -48,14 +48,14 @@ def build(data, argv):
         build_id = options['--build']
 
     for job in jobs:
-        LOGGER.info(get_build_info(job, build_id=build_id,
+        LOGGER.info(get_build_info(job.api_instance, build_id=build_id,
                                    keys=(keys or DEFAULT_BUILD_KEYS),
                                    wait=wait))
 
 
-def get_build_info(job, build_id=None, keys=DEFAULT_BUILD_KEYS, wait=False):
+def get_build_info(api_instance, build_id=None, keys=DEFAULT_BUILD_KEYS, wait=False):
     """ print build info about a job """
-    build = job.get_build(build_id) if build_id else job.get_last_build()
+    build = api_instance.get_build(build_id) if build_id else api_instance.get_last_build()
     output = ""
 
     if wait:
@@ -65,6 +65,11 @@ def get_build_info(job, build_id=None, keys=DEFAULT_BUILD_KEYS, wait=False):
         output += build.get_console()
 
     if 'scm' in keys:
-        output += build.get_revision()
+        # https://github.com/salimfadhley/jenkinsapi/pull/250
+        # try/except while this is still occuring
+        try:
+            output += build.get_revision()
+        except IndexError:
+            pass
 
     return output
