@@ -52,7 +52,7 @@ def build(data, argv):
         build_id = options['--build']
 
     for job in jobs:
-        LOGGER.info(get_build_info(job.api_instance, build_id=build_id,
+        LOGGER.info(get_build_info(job.api_instance(), build_id=build_id,
                                    keys=(keys or DEFAULT_BUILD_KEYS),
                                    wait=wait))
 

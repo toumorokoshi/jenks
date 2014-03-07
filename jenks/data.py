@@ -36,7 +36,31 @@ JenksJob = namedtuple('JenksJob', 'key, host, name, api_instance')
 class JenksData(object):
 
     def __init__(self, config_dict, write_method=None):
-        self._parse_dict(config_dict)
+        self.config_dict = config_dict
+        self._host_cache = {}
+        self._job_cache = {}
+        self._jobs = {}
+        self._empty_key_index = 0
+        for host in sorted(self.config_dict.keys()):
+            host_dict = self.config_dict[host]
+            host_url = host_dict.get('url', None)
+            if 'jobs' in host_dict:
+                for job in host_dict['jobs']:
+                    self._add_job(host, job, host_url=host_url)
+
+    def _get_job_api_instance(self, host, job_name):
+        if host not in self._job_cache:
+            self._job_cache[host] = {}
+        if job_name not in self._job_cache[host]:
+            host_api_instance = self._get_host(host)
+            self._job_cache[host][job_name] = host_api_instance[job_name]
+
+        return self._job_cache[host][job_name]
+
+    def _get_host(self, host):
+        if host not in self._host_cache:
+            self._host_cache[host] = Jenkins(host)
+        return self._host_cache[host]
 
     def job_keys(self):
         """ return a list of jobs """
@@ -70,23 +94,14 @@ class JenksData(object):
         if self._write_method is not None:
             self.write_method(self._config_dict)
 
-    def _parse_dict(self, config_dict):
-        """ parse the dictionary into a config object """
-        self.hosts_info = config_dict
-        self.hosts = {}
-        self._jobs = {}
-        self._empty_key_index = 0
-        for host in sorted(config_dict.keys()):
-            info = config_dict[host]
-            url = info.get('url', host)
-            self.hosts[host] = Jenkins(url)
-            if 'jobs' in info:
-                for job_name in info['jobs']:
-                    self._add_job(host, job_name)
-
-    def _add_job(self, host, job_name):
+    def _add_job(self, host, job_name, host_url=None):
+        if host_url is None:
+            host_url = host
         key = KEYS[self._empty_key_index]
-        value = JenksJob(key, host, job_name, self.hosts[host][job_name])
+
+        def get_api_instance():
+            return self._get_job_api_instance(host_url, job_name)
+        value = JenksJob(key, host, job_name, get_api_instance)
         self._jobs[key] = value
         self._empty_key_index += 1
 

@@ -12,9 +12,9 @@ class Status(object):
 
     @staticmethod
     def act(job):
-        last_build = job.api_instance.get_last_build()
+        last_build = job.api_instance().get_last_build()
 
-        if job.api_instance.is_queued():
+        if job.api_instance().is_queued():
             status = "queued"
         else:
             status = last_build.get_status() or "running..."
@@ -50,8 +50,8 @@ class Trigger(object):
 
     @staticmethod
     def act(job):
-        if job.api_instance.is_running():
+        if job.api_instance().is_running():
             return "{0}, {1} is already running".format(job.host, job.name)
         else:
-            requests.get(job.api_instance.get_build_triggerurl())
+            requests.get(job.api_instance().get_build_triggerurl())
             return "triggering {0}, {1}...".format(job.host, job.name)
