@@ -43,6 +43,14 @@ class TestBuildParse(object):
             ok_(mock_get_build_info.called_with(self.api_instance_mock,
                                                 keys=('console,')))
 
+    def test_options_console_only(self):
+        """ build -c should print just console output """
+        with patch('jenks.subcommand.build.get_build_info') as mock_get_build_info:
+            args = shlex.split(":1 -c")
+            build(self.data, args)
+            ok_(mock_get_build_info.called_with(self.api_instance_mock,
+                                                keys=('console,')))
+
     def test_options_wait(self):
         """ build -w should pass get_build_info wait """
         with patch('jenks.subcommand.build.get_build_info') as get_build_info:
@@ -82,8 +90,10 @@ class TestPrintBuildInfo(object):
         self.build = Mock(spec=Build)
         self.build_console_output = "FOO"
         self.build_revision_output = "BAR"
+        self.build_timestamp_output = "BAZ"
         self.build.get_console.return_value = self.build_console_output
         self.build.get_revision.return_value = self.build_revision_output
+        self.build.get_timestamp.return_value = self.build_timestamp_output
 
     def test_get_build_info_default(self):
         """ get_build_info should print defaults without arguments """
@@ -91,6 +101,7 @@ class TestPrintBuildInfo(object):
         output = get_build_info(self.job)
         ok_(self.build_console_output in output)
         ok_(self.build_revision_output in output)
+        ok_(self.build_timestamp_output in output)
 
     def test_get_build_info_build_id(self):
         """ get_build_info should print that build's information when a build_id is passed """

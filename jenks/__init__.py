@@ -1,8 +1,8 @@
 """Jenks, a Jenkins command line tool.
 Usage:
   jenks docs
-  jenks <command> [<args>...]
   jenks [<keys>] [-l | -t]
+  jenks <command> [<args>...]
   jenks (-h | --help)
   jenks
 

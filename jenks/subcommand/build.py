@@ -4,12 +4,13 @@ jenks will print all output regarding a build. If one or more
 qualifiers are passed, that subset will be printed instead.
 
 Usage:
-    build (<keys> | -j <job_code>) [ -csw ] [ -b <build_id> ]
+    build (<keys> | -j <job_code>) [ -cswt ] [ -b <build_id> ]
 
 Options:
     -j <job_code>, --jobs <job_code>     host:name job code
     -c, --console                        console output
     -s, --scm                            scm information
+    -t, --timestamp                      get the timestamp
     -w, --wait                           if a build is running, wait until the build is finished before returning
     -b <build_id>, --build <build_id>    output information regarding a specific build
 """
@@ -20,7 +21,7 @@ from jenks.utils import JenksException
 
 LOGGER = logging.getLogger(__name__)
 
-DEFAULT_BUILD_KEYS = ('console', 'scm')
+DEFAULT_BUILD_KEYS = ('timestamp', 'console', 'scm')
 
 
 class BuildException(JenksException):
@@ -61,14 +62,17 @@ def get_build_info(api_instance, build_id=None, keys=DEFAULT_BUILD_KEYS, wait=Fa
     if wait:
         build.block_until_complete()
 
+    if 'timetamp' in keys:
+        output += build.get_timestamp() + '\n'
+
     if 'console' in keys:
-        output += build.get_console()
+        output += build.get_console() + '\n'
 
     if 'scm' in keys:
         # https://github.com/salimfadhley/jenkinsapi/pull/250
         # try/except while this is still occuring
         try:
-            output += build.get_revision()
+            output += build.get_revision() + '\n'
         except IndexError:
             pass
 
