@@ -42,6 +42,9 @@ def build(data, argv):
     if options['--scm']:
         keys.append('scm')
 
+    if options['--timestamp']:
+        keys.append('timestamp')
+
     if options['--wait']:
         wait = True
 
@@ -54,16 +57,18 @@ def build(data, argv):
                                    wait=wait))
 
 
-def get_build_info(api_instance, build_id=None, keys=DEFAULT_BUILD_KEYS, wait=False):
+def get_build_info(api_instance, build_id=None,
+                   keys=DEFAULT_BUILD_KEYS, wait=False):
     """ print build info about a job """
-    build = api_instance.get_build(build_id) if build_id else api_instance.get_last_build()
+    build = (api_instance.get_build(build_id) if build_id
+             else api_instance.get_last_build())
     output = ""
 
     if wait:
         build.block_until_complete()
 
-    if 'timetamp' in keys:
-        output += build.get_timestamp() + '\n'
+    if 'timestamp' in keys:
+        output += str(build.get_timestamp()) + '\n'
 
     if 'console' in keys:
         output += build.get_console() + '\n'

@@ -43,13 +43,13 @@ class TestBuildParse(object):
             ok_(mock_get_build_info.called_with(self.api_instance_mock,
                                                 keys=('console,')))
 
-    def test_options_console_only(self):
-        """ build -c should print just console output """
+    def test_options_timestamp_only(self):
+        """ build -t should print just timestamp output """
         with patch('jenks.subcommand.build.get_build_info') as mock_get_build_info:
-            args = shlex.split(":1 -c")
+            args = shlex.split(":1 -t")
             build(self.data, args)
             ok_(mock_get_build_info.called_with(self.api_instance_mock,
-                                                keys=('console,')))
+                                                keys=('timestamp,')))
 
     def test_options_wait(self):
         """ build -w should pass get_build_info wait """
