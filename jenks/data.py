@@ -77,10 +77,11 @@ class JenksData(object):
             jobs.extend([job for job in self.jobs(job_keys)])
         if job_code:
             host, job_name = job_code.rsplit("/", 1)
-            host = self.hosts.get(host, Jenkins(host))
+            host_url = self.config_dict.get(host, {}).get('url', host)
+            host = self._get_host(host_url)
             if host.has_job(job_name):
-                job = self.hosts[host][job_name]
-                jobs.extend([job])
+                jobs.append(JenksJob(None, host, job_name,
+                                     lambda: self._get_job_api_instance(host_url, job_name)))
             else:
                 raise JenksDataException(
                     "Could not find Job {0}/{1}!".format(host, job_name))
