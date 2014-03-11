@@ -27,8 +27,8 @@ class TestData(object):
     def test_get_jobs_from_arguments(self):
         """ get_jobs_from_arguments(":<keys>") should return all JenksJob objects """
         jobs = self.data.get_jobs_from_arguments(":01")
-        ok_(any(lambda x: x.name == 'foo'), jobs)
-        ok_(any(lambda x: x.name == 'bar'), jobs)
+        ok_(any(map(lambda x: x.name == 'foo', jobs)))
+        ok_(any(map(lambda x: x.name == 'bar', jobs)))
 
     def test_add_job(self):
         """ add_job(<host>, <job_name>) should add the job to the JenksData object """
@@ -39,6 +39,3 @@ class TestData(object):
         """ add_job(<host_url>, <job_name>) should add the job to the JenksData object """
         self.data.add_job("http://localhost:8080/", "baz")
         ok_(self.data.has_job('localhost', 'baz'))
-
-class YamlConfiguration(object):
-    """ test the yaml configuration """
