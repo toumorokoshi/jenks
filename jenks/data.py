@@ -87,9 +87,15 @@ class JenksData(object):
                     "Could not find Job {0}/{1}!".format(host, job_name))
         return jobs
 
-    def add_job(self, host, job_name):
+    def add_job(self, raw_host, job_name):
         """ add a job to the config with <host> and <job_name> """
-        pass
+        if raw_host in self.config_dict:
+            host_url = self.config_dict['host'].get('url', host)
+            host = raw_host
+
+        if host_url in
+
+        self._add_job(host, job_name)
 
     def write(self):
         if self._write_method is not None:
