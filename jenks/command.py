@@ -2,6 +2,7 @@
 A file to store jenks command classes
 """
 import requests
+from jenkinsapi.custom_exceptions import NoBuildData
 
 
 class Status(object):
@@ -12,20 +13,29 @@ class Status(object):
 
     @staticmethod
     def act(job):
-        last_build = job.api_instance().get_last_build()
+        try:
+            last_build = job.api_instance().get_last_build()
 
-        if job.api_instance().is_queued():
-            status = "queued"
-        else:
-            status = last_build.get_status() or "running..."
+            if job.api_instance().is_queued():
+                status = "queued"
+            else:
+                status = last_build.get_status() or "running..."
 
-        return Status.TEMPLATE.format(
-            key=job.key,
-            host=job.host,
-            name=job.name,
-            number=last_build.get_number(),
-            status=status
-        )
+            return Status.TEMPLATE.format(
+                key=job.key,
+                host=job.host,
+                name=job.name,
+                number=last_build.get_number(),
+                status=status
+            )
+        except NoBuildData:
+            return Status.TEMPLATE.format(
+                key=job.key,
+                host=job.host,
+                name=job.name,
+                number=0,
+                status="Hasn't run yet"
+            )
 
 
 class List(object):

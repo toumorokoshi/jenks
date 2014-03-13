@@ -15,13 +15,14 @@ Available Jenks Commands:
   config    modify jenks configuration
   build     get information about a specific build for a job
 """
+import logging
 import signal
 import sys
-import logging
-import sys
+import yaml
 
 from docopt import docopt
-from .data import get_configuration, JenksData
+from .data import JenksData
+from .utils import get_configuration_file, generate_write_yaml_to_file
 from .command import List, Status, Trigger
 from .docs import DOCS, README_CONTENT
 from .subcommand import build, config
@@ -44,6 +45,16 @@ def _create_stdout_logger():
     log.setLevel(logging.INFO)
 
 
+def _get_jenks_config():
+    """ retrieve the jenks configuration object """
+    config_file = get_configuration_file()
+    with open(config_file, 'r') as fh:
+        return JenksData(
+            yaml.load(fh.read()),
+            write_method=generate_write_yaml_to_file(config_file)
+        )
+
+
 def main(argv=sys.argv[1:]):
     signal.signal(signal.SIGINT, signal_handler)
     _create_stdout_logger()
@@ -57,7 +68,7 @@ def main(argv=sys.argv[1:]):
         ))
         sys.exit(0)
     try:
-        data = JenksData(get_configuration())
+        data = _get_jenks_config()
         # parse subcommands
         if options['<command>']:
             subcommand_argv = options['<args>']

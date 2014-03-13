@@ -1,7 +1,5 @@
-import os
 from jenkinsapi.jenkins import Jenkins
 from collections import namedtuple
-import yaml
 
 from .utils import generate_valid_keys
 
@@ -36,13 +34,14 @@ JenksJob = namedtuple('JenksJob', 'key, host, name, api_instance')
 class JenksData(object):
 
     def __init__(self, config_dict, write_method=None):
-        self.config_dict = config_dict
+        self._write_method = write_method
+        self._config_dict = config_dict
         self._host_cache = {}
         self._job_cache = {}
         self._jobs = {}
         self._empty_key_index = 0
-        for host in sorted(self.config_dict.keys()):
-            host_dict = self.config_dict[host]
+        for host in sorted(self._config_dict.keys()):
+            host_dict = self._config_dict[host]
             host_url = host_dict.get('url', None)
             if 'jobs' in host_dict:
                 for job in host_dict['jobs']:
@@ -77,7 +76,7 @@ class JenksData(object):
             jobs.extend([job for job in self.jobs(job_keys)])
         if job_code:
             host, job_name = job_code.rsplit("/", 1)
-            host_url = self.config_dict.get(host, {}).get('url', host)
+            host_url = self._config_dict.get(host, {}).get('url', host)
             host = self._get_host(host_url)
             if host.has_job(job_name):
                 jobs.append(JenksJob(None, host, job_name,
@@ -89,15 +88,15 @@ class JenksData(object):
 
     def has_job(self, host, job_name):
         """ return true if the job in the JenksData """
-        return job_name in self.config_dict.get(host, {'jobs': []})['jobs']
+        return job_name in self._config_dict.get(host, {'jobs': []})['jobs']
 
     def add_job(self, raw_host, job_name):
         """ add a job to the config with <host> and <job_name> """
-        url_host_map = dict(((host_dict.get('url', host_name), host_name)
-                             for host_name, host_dict in self.config_dict.items()))
+        url_host_map = dict(((host_dict.get('url', host_name).rstrip('/'), host_name)
+                             for host_name, host_dict in self._config_dict.items()))
 
-        if raw_host in self.config_dict:
-            host_url = self.config_dict[raw_host].get('url', raw_host)
+        if raw_host in self._config_dict:
+            host_url = self._config_dict[raw_host].get('url', raw_host)
             host = raw_host
         elif raw_host in url_host_map:
             host_url = raw_host
@@ -105,17 +104,17 @@ class JenksData(object):
         else:
             host_url, host = raw_host, raw_host
 
-        if host not in self.config_dict:
-            self.config_dict[host] = {
+        if host not in self._config_dict:
+            self._config_dict[host] = {
                 'url': host_url,
                 'jobs': []
             }
-        self.config_dict[host]['jobs'].append(job_name)
+        self._config_dict[host]['jobs'].append(job_name)
         self._add_job(host, job_name, host_url=host_url)
 
     def write(self):
         if self._write_method is not None:
-            self.write_method(self._config_dict)
+            self._write_method(self._config_dict)
 
     def _add_job(self, host, job_name, host_url=None):
         if host_url is None:
@@ -127,15 +126,3 @@ class JenksData(object):
         value = JenksJob(key, host, job_name, get_api_instance)
         self._jobs[key] = value
         self._empty_key_index += 1
-
-
-def get_configuration():
-    """ return jenks configuration """
-    path = os.path.abspath(os.curdir)
-    while path != os.sep:
-        config_path = os.path.join(path, CONFIG_FILE_NAME)
-        if os.path.exists(config_path):
-            with open(config_path) as fh:
-                return yaml.load(fh.read())
-        path = os.path.dirname(path)
-    raise JenksDataException(UNABLE_TO_FIND_JENKS_CONFIG)
