@@ -39,6 +39,3 @@ class TestData(object):
         """ add_job(<host_url>, <job_name>) should add the job to the JenksData object """
         self.data.add_job("http://localhost:8080/", "baz")
         ok_(self.data.has_job('localhost', 'baz'))
-
-
-class TestYamlConfig(object):
