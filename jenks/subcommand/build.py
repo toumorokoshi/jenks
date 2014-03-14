@@ -4,10 +4,9 @@ jenks will print all output regarding a build. If one or more
 qualifiers are passed, that subset will be printed instead.
 
 Usage:
-    build (<keys> | -j <job_code>) [ -cswt ] [ -b <build_id> ]
+    build [ <keys_or_code> ] [ -cswt ] [ -b <build_id> ]
 
 Options:
-    -j <job_code>, --jobs <job_code>     host:name job code
     -c, --console                        console output
     -s, --scm                            scm information
     -t, --timestamp                      get the timestamp
@@ -34,8 +33,7 @@ def build(data, argv):
     keys = []
     wait = False
     build_id = None
-    jobs = data.get_jobs_from_arguments(job_keys=options['<keys>'],
-                                        job_code=options['--jobs'])
+    jobs = data.get_jobs_from_argument(options['<keys_or_code>'])
     if options['--console']:
         keys.append('console')
 

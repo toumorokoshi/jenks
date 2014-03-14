@@ -41,7 +41,7 @@ def get_configuration_file():
         if os.path.exists(config_path):
             return config_path
         path = os.path.dirname(path)
-    raise JenksException(UNABLE_TO_FIND_JENKS_CONFIG)
+    return None
 
 
 def generate_write_yaml_to_file(file_name):

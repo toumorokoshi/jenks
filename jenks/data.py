@@ -1,3 +1,5 @@
+import copy
+
 from jenkinsapi.jenkins import Jenkins
 from collections import namedtuple
 
@@ -35,7 +37,7 @@ class JenksData(object):
 
     def __init__(self, config_dict, write_method=None):
         self._write_method = write_method
-        self._config_dict = config_dict
+        self._config_dict = copy.deepcopy(config_dict) or {}
         self._host_cache = {}
         self._job_cache = {}
         self._jobs = {}
@@ -68,14 +70,16 @@ class JenksData(object):
     def jobs(self, job_keys):
         return (self._jobs[key] for key in job_keys)
 
-    def get_jobs_from_arguments(self, job_keys=None, job_code=None):
-        """ return a generator for jobs """
+    def get_jobs_from_argument(self, raw_job_string):
+        """ return a list of jobs corresponding to the raw_job_string """
         jobs = []
-        if job_keys:
-            job_keys = job_keys.strip(" :")
+        if raw_job_string.startswith(":"):
+            job_keys = raw_job_string.strip(" :")
             jobs.extend([job for job in self.jobs(job_keys)])
-        if job_code:
-            host, job_name = job_code.rsplit("/", 1)
+        # we assume a job code
+        else:
+            assert "/" in raw_job_string, "Job Code {0} is improperly formatted!".format(raw_job_string)
+            host, job_name = raw_job_string.rsplit("/", 1)
             host_url = self._config_dict.get(host, {}).get('url', host)
             host = self._get_host(host_url)
             if host.has_job(job_name):

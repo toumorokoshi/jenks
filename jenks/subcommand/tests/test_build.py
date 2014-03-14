@@ -15,25 +15,15 @@ class TestBuildParse(object):
         self.api_instance_mock = Mock(spec=Job)
         self.job_mock = Mock(spec=JenksJob)
         self.job_mock.api_instance.return_value = self.api_instance_mock
-        self.data.get_jobs_from_arguments = Mock(return_value=(self.job_mock,))
+        self.data.get_jobs_from_argument = Mock(return_value=(self.job_mock,))
 
     def test_options_no_options(self):
         """ build <keys> should print build summaries for the job """
         with patch('jenks.subcommand.build.get_build_info') as get_build_info:
             args = shlex.split(":1")
             build(self.data, args)
-            self.data.get_jobs_from_arguments.assert_called_with(job_keys=":1",
-                                                                 job_code=None)
+            self.data.get_jobs_from_argument.assert_called_with(":1")
             ok_(get_build_info.called_with(self.api_instance_mock))
-
-    def test_options_job_code(self):
-        """ build -j <job_code> should return job code """
-        with patch('jenks.subcommand.build.get_build_info'):
-            args = shlex.split("-j host:name")
-            build(self.data, args)
-            self.data.get_jobs_from_arguments.assert_called_with(
-                job_keys=None,
-                job_code="host:name")
 
     def test_options_console_only(self):
         """ build -c should print just console output """

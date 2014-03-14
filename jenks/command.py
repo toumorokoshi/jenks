@@ -1,7 +1,6 @@
 """
 A file to store jenks command classes
 """
-import requests
 from jenkinsapi.custom_exceptions import NoBuildData
 
 
@@ -51,17 +50,3 @@ class List(object):
             host=job.host,
             name=job.name
         )
-
-
-class Trigger(object):
-    """" trigger jobs """
-
-    argument = "--trigger"
-
-    @staticmethod
-    def act(job):
-        if job.api_instance().is_running():
-            return "{0}, {1} is already running".format(job.host, job.name)
-        else:
-            requests.get(job.api_instance().get_build_triggerurl())
-            return "triggering {0}, {1}...".format(job.host, job.name)

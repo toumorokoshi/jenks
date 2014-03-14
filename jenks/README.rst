@@ -2,17 +2,21 @@
 jenks
 =====
 
-Jenks is a command-line tool, designed to retrieve information and trigger jobs on remote a jenkins host
+Jenks is a command-line tool, designed to interact with a remote jenkins host, including:
 
-After filling out a configuration file, getting status on jobs is simply::
+Start by either filling out a configuration file, or adding a job with::
+
+    $ jenks config -a http://localhost:8080/job/bar/
+
+After that, you can get status information with:
 
     $ jenks
     0: localhost, foo (last build #7) SUCCESS
     1: localhost, bar (last build #3) SUCCESS
 
 Jenks works with unique keys assigned to each job, rather than job
-names. You can see it in the above example: it's the 0 and 1 assigned
-at the beginning of the line.
+names. You can see it in the above example: it's the 0 and 1 at the
+beginning of the line.
 
 You can trigger the job foo from above with::
 
@@ -33,7 +37,7 @@ And you can pull up more information with::
 Installation
 ============
 
-* since jenkinsapi (one of the dependencies) is only python2
+* since jenkinsapi (the main dependency) is only python2
   compatible, jenks is currently only python2 compatible.
 
 There's a few ways to install Jenks.
@@ -111,11 +115,11 @@ You can also reference jobs from the jenksrc by name, using the job
 code syntax. The job code syntax looks like::
 
     <host_key>/<job_name>
-    localhost:bar
+    localhost/bar
 
 For example, here's how to get information about the latest build of a job by job code::
 
-    $ jenks build -j localhost:bar
+    $ jenks build localhost/bar
 
 Examples
 ========
