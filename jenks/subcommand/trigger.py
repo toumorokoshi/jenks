@@ -15,13 +15,13 @@ LOGGER = logging.getLogger(__name__)
 def trigger(data, argv):
     options = docopt(__doc__, argv=argv)
 
-    jobs = data.get_jobs_from_arguments(job_keys=options['<keys_or_code>'])
+    jobs = data.get_jobs_from_argument(options['<keys_or_code>'])
 
     for job in jobs:
-        LOGGER.info(trigger_job(job))
+        LOGGER.info(_trigger_job(job))
 
 
-def trigger_job(job):
+def _trigger_job(job):
     """ trigger a job """
     if job.api_instance().is_running():
         return "{0}, {1} is already running".format(job.host, job.name)
