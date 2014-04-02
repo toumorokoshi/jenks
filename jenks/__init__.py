@@ -68,7 +68,13 @@ def _get_jenks_config():
         )
 
 
-def main(argv=sys.argv[1:]):
+def main(argv=sys.argv[1:], print_method=None):
+
+    if print_method is None:
+        def print_to_stdout(x):
+            print(x)
+        print_method = print_to_stdout
+
     signal.signal(signal.SIGINT, signal_handler)
     _create_stdout_logger()
     options = docopt(__doc__, argv=argv, options_first=True)
@@ -103,9 +109,9 @@ def main(argv=sys.argv[1:]):
             if options[cmd.argument]:
                 command = cmd
         for job in jobs:
-            print(command.act(job))
+            print_method(command.act(job))
     except AssertionError as e:
-        print("Error! {0}".format(str(e)))
+        print_method("Error! {0}".format(str(e)))
     except Exception as e:
         raise
 
