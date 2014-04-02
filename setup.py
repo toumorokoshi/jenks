@@ -6,7 +6,7 @@ except:
     from distutils.core import setup
 
 setup(name='jenks',
-      version='0.2.2',
+      version='0.2.3',
       description='a jenkins command-line tool',
       long_description=open('README.rst').read(),
       author='Yusuke Tsutsumi',
@@ -21,7 +21,7 @@ setup(name='jenks',
           'pyyaml>=3.10'
       ],
       classifiers=[
-          'Development Status :: 2 - Pre-Alpha',
+          'Development Status :: 4 - Beta',
           'Topic :: System :: Software Distribution',
           'License :: OSI Approved :: MIT License',
           'Programming Language :: Python',
