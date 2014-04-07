@@ -13,6 +13,7 @@ Options:
 Available Jenks Commands:
   config    modify jenks configuration
   build     get information about a specific build for a job
+  host      prints information about a host
   trigger   trigger a job
 """
 import logging
@@ -28,7 +29,7 @@ from .utils import (get_configuration_file,
                     CONFIG_FILE_NAME)
 from .command import List, Status
 from .docs import DOCS, README_CONTENT
-from .subcommand import build, config, trigger
+from .subcommand import build, config, trigger, host
 
 
 def signal_handler(signal, frame):
@@ -39,7 +40,8 @@ ARGUMENT_COMMANDS = [List]
 SUBCOMMANDS = (
     ('build', build.build),
     ('config', config.config),
-    ('trigger', trigger.trigger)
+    ('trigger', trigger.trigger),
+    ('host', host.host)
 )
 
 

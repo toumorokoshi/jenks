@@ -1,4 +1,5 @@
 from nose.tools import eq_, ok_
+from mock import Mock, patch
 
 from jenks.data import JenksData
 
@@ -39,3 +40,14 @@ class TestData(object):
         """ add_job(<host_url>, <job_name>) should add the job to the JenksData object """
         self.data.add_job("http://localhost:8080", "baz")
         ok_(self.data.has_job('localhost', 'baz'))
+
+    def test_get_host(self):
+        """ get_host(<host>) should return a host object """
+        with patch('jenkinsapi.jenkins.Jenkins') as jenkins:
+            host = self.data.get_host('localhost')
+            isinstance(host, Mock)
+            jenkins.assert_called_with('http://localhost:8080')
+
+    def test_hosts(self):
+        """" hosts() should return a list of hosts """
+        eq_(list(self.data.hosts()), ['localhost'])

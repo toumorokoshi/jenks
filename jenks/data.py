@@ -1,6 +1,6 @@
 import copy
 
-from jenkinsapi.jenkins import Jenkins
+from jenkinsapi import jenkins
 from collections import namedtuple
 
 from .utils import generate_valid_keys
@@ -39,10 +39,11 @@ class JenksData(object):
         self._write_method = write_method
         self._config_dict = copy.deepcopy(config_dict) or {}
         self._host_cache = {}
+        self._host_list = list(self._config_dict.keys())
         self._job_cache = {}
         self._jobs = {}
         self._empty_key_index = 0
-        for host in sorted(self._config_dict.keys()):
+        for host in sorted(self._host_list):
             host_dict = self._config_dict[host]
             host_url = host_dict.get('url', None)
             if 'jobs' in host_dict:
@@ -53,14 +54,17 @@ class JenksData(object):
         if host not in self._job_cache:
             self._job_cache[host] = {}
         if job_name not in self._job_cache[host]:
-            host_api_instance = self._get_host(host)
+            host_api_instance = self.get_host(host)
             self._job_cache[host][job_name] = host_api_instance[job_name]
 
         return self._job_cache[host][job_name]
 
-    def _get_host(self, host):
+    def get_host(self, host):
         if host not in self._host_cache:
-            self._host_cache[host] = Jenkins(host)
+            host_url = host
+            if host in self._config_dict:
+                host_url = self._config_dict[host].get('url', host_url)
+            self._host_cache[host] = jenkins.Jenkins(host_url)
         return self._host_cache[host]
 
     def job_keys(self):
@@ -69,6 +73,10 @@ class JenksData(object):
 
     def jobs(self, job_keys):
         return (self._jobs[key] for key in job_keys)
+
+    def hosts(self):
+        """ return a generator of hosts """
+        return (h for h in self._host_list)
 
     def get_jobs_from_argument(self, raw_job_string):
         """ return a list of jobs corresponding to the raw_job_string """
@@ -81,7 +89,7 @@ class JenksData(object):
             assert "/" in raw_job_string, "Job Code {0} is improperly formatted!".format(raw_job_string)
             host, job_name = raw_job_string.rsplit("/", 1)
             host_url = self._config_dict.get(host, {}).get('url', host)
-            host = self._get_host(host_url)
+            host = self.get_host(host_url)
             if host.has_job(job_name):
                 jobs.append(JenksJob(None, host, job_name,
                                      lambda: self._get_job_api_instance(host_url, job_name)))
