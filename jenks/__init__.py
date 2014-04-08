@@ -2,12 +2,13 @@
 Usage:
   jenks docs
   jenks <command> [<args>...]
-  jenks [-l | -t] [<keys_or_code>]
+  jenks [-l | -t | -b ] [<keys_or_code>]
   jenks (-h | --help)
   jenks
 
 Options:
   -l, --list      list the jobs
+  -b, --browser   open the jobs in a browser
   -h, --help      print this help guide. use `jenks docs` for a full page of documentation
 
 Available Jenks Commands:
@@ -27,7 +28,7 @@ from .data import JenksData
 from .utils import (get_configuration_file,
                     generate_write_yaml_to_file,
                     CONFIG_FILE_NAME)
-from .command import List, Status
+from .command import List, Status, Browser
 from .docs import DOCS, README_CONTENT
 from .subcommand import build, config, trigger, host
 
@@ -36,7 +37,7 @@ def signal_handler(signal, frame):
     sys.exit(0)
 
 DEFAULT_COMMAND = Status
-ARGUMENT_COMMANDS = [List]
+ARGUMENT_COMMANDS = [List, Browser]
 SUBCOMMANDS = (
     ('build', build.build),
     ('config', config.config),

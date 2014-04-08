@@ -2,6 +2,7 @@
 A file to store jenks command classes
 """
 from jenkinsapi.custom_exceptions import NoBuildData
+import webbrowser
 
 
 class Status(object):
@@ -50,3 +51,13 @@ class List(object):
             host=job.host,
             name=job.name
         )
+
+
+class Browser(object):
+    """ open the job's page in a browser """
+    argument = "--browser"
+
+    @staticmethod
+    def act(job):
+        webbrowser.open(job.api_instance().baseurl)
+        return ""
