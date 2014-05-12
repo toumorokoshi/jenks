@@ -47,7 +47,7 @@ class JenksData(object):
             host_dict = self._config_dict[host]
             host_url = host_dict.get('url', None)
             if 'jobs' in host_dict:
-                for job in host_dict['jobs']:
+                for job in sorted(host_dict['jobs']):
                     self._add_job(host, job, host_url=host_url)
 
     def _get_job_api_instance(self, host, job_name):

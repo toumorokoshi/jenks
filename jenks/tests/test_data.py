@@ -51,3 +51,5 @@ class TestData(object):
     def test_hosts(self):
         """" hosts() should return a list of hosts """
         eq_(list(self.data.hosts()), ['localhost'])
+
+    # TODO test sort order of jobs
