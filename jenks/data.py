@@ -121,6 +121,8 @@ class JenksData(object):
                 'url': host_url,
                 'jobs': []
             }
+        if 'jobs' not in self._config_dict[host]:
+            self._config_dict[host]['jobs'] = []
         self._config_dict[host]['jobs'].append(job_name)
         self._add_job(host, job_name, host_url=host_url)
 
